@@ -18,6 +18,7 @@
      }
 
 现在我们拥有一个可以被 ZF2 的 _ModuleManager_ 侦测到的模组了。让我们将这个模组添加到我们应用程序中。虽然这个模组目前还不能干任何事情，但仅仅拥有 `Module.php` 类已经能让其被 ZF2 的 _ModuleManager_ 载入。要实现这点，在主应用程序配置文件 `/config/application.config.php` 中内的模组数组中为 `Blog` 添加一个条目：
+
 	 <?php
 	 // Filename: /config/application.config.php
 	 return array(
