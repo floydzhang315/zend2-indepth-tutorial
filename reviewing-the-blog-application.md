@@ -1,5 +1,5 @@
 # 回顾博客应用程序
-通过之前的七个章节我们已经创建了一个完整功能的增删改查应用程序，以博客作为一个示例。在我们制作的过程中我们应用了几个不同的设计模式和最佳实践。现在是时候来重新数一数并且看看其中一些我们写过的代码示例了。这将会以问与答的形式呈现。
+通过之前的七个章节，我们已经创建了一个以博客作为示例的完整功能的增删改查应用程序。在我们制作的过程中应用了几种不同的设计模式和最佳实践。现在是时候来重新数一数并且看看其中一些我们写过的代码示例了。这将会以问与答的形式呈现。
 
 ## 我们总是需要所有的层和接口吗？
 
@@ -28,10 +28,10 @@
 	     public function createService(ServiceLocatorInterface $serviceLocator)
 	     {
 	         return new ZendDbSqlMapper(
-	             $serviceLocator->get('Zend\Db\Adapter\Adapter'), // DB-Adapter
-	             'news',                                          // Table-Name
-	             new ClassMethods(false),                         // Object-Hydrator
-	             new News()                                       // Object-Prototype
+	             $serviceLocator->get('Zend\Db\Adapter\Adapter'), // 数据库适配器
+	             'news',                                          // 表名
+	             new ClassMethods(false),                         // 对象充水器
+	             new News()                                       // 对象原型
 	         );
 	     }
 	 }
@@ -44,8 +44,8 @@
 
 再看看 `DeleteController` 和 `ListController`，你会注意到两个控制器都有一样的依赖对象。两者都只要求 `PostService`，那么为何不将其合并成一个控制器呢？原因是语义，你会跑去 `ListController` 寻找 `deleteAction()` 吗？我们大多数人不会干这事，所以我们为其建立了一个新类。
 
-在应用程序中的 `InsertForm` 和 `UpdateForm` 互有区别，你也许会总是想将其分为两个控制器而不是像我们的例子中将其做成一个联合的 `WriteController`。这类事情基本上是因应用程序的不同而不同，不过基本目标一直都是：**让你的控制器纤细/轻量**。
+在应用程序中的 `InsertForm` 和 `UpdateForm` 互有区别，你也许会总是想将其分为两个控制器而不是像我们的例子中将其做成一个联合的 `WriteController`。这类事情基本上是因应用程序的不同而不同，不过基本目标一直都是：**让你的控制器总是纤细/轻量**。
 
 ## 还有更多的问题吗？ 请联络我们！
 
-如果你觉得这个 FAQ 还少了点什么，请将你的问题私信给我们然后我们会给你答案！
+如果你觉得这个 FAQ 还少了点什么，请将你的问题私信给我们，然后我们会给你答案！

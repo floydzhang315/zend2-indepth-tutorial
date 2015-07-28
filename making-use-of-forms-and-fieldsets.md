@@ -22,7 +22,7 @@
 创建文件 `/module/Blog/src/Blog/Form/PostFieldset.php` 并且添加下述代码：
 
 	<?php
-	// Filename: /module/Blog/src/Blog/Form/PostFieldset.php
+	// 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
 	namespace Blog\Form;
 	
 	use Zend\Form\Fieldset;
@@ -60,7 +60,7 @@
 现在我们已经准备好了我们的 `PostFieldset`，还需要在 `Form` 内使用它。我们接下来需要添加一个表单的提交按钮，这样用户就能够提交数据了。所以在同一个路径 `/module/Blog/src/Blog/Form/PostForm` 下创建 `PostForm`，并且将 `PostFieldset` 添加进去：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Form/PostForm.php
+	 // 文件名： /module/Blog/src/Blog/Form/PostForm.php
 	 namespace Blog\Form;
 	
 	 use Zend\Form\Form;
@@ -99,7 +99,7 @@
 如您在任务清单上所见，我们需要一个新的控制器，而且这个控制器应该拥有两个依赖对象。一个依赖对象时 `PostService`，它也在 `ListController` 中被使用，而另一个依赖对象 `PostForm` 是全新的。由于在显示博客数据的时候，`PostFrom` 是一个 `ListController` 不需要的依赖对象，所以我们会创建一个新的控制器来让读和写两边的事务分离。首先，在配置文件中注册一个控制器工厂（controller-factory）：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** DB Config */ ),
 	     'service_manager' => array( /** ServiceManager Config */),
@@ -116,7 +116,7 @@
 下一步就是编写 `WriteControllerFactory`。让 factory 返回 `WriteController` 并且在构造器中添加所需的依赖对象：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Factory/WriteControllerFactory.php
+	 // 文件名： /module/Blog/src/Blog/Factory/WriteControllerFactory.php
 	 namespace Blog\Factory;
 	
 	 use Blog\Controller\WriteController;
@@ -143,7 +143,7 @@
 下一步，创建我们的控制器。请确保通过输入依赖对象的接口并且添加 `addAction()` 函数来提示依赖对象。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -172,7 +172,7 @@
 接下来创建新路径：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** Db Config */ ),
 	     'service_manager' => array( /** ServiceManager Config */ ),
@@ -239,7 +239,7 @@
 由于缺少了 `parent::__construct()` 调用，表单和字段集都不能正确的初始化。让我们通过在表单和字段级中调用父级构造器来修正这个问题。为了能拥有更好的可伸缩性我们也会包含能够接收多个参数的 `__construct()`  函数的签名。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Form/PostForm.php
+	 // 文件名： /module/Blog/src/Blog/Form/PostForm.php
 	 namespace Blog\Form;
 	
 	 use Zend\Form\Form;
@@ -268,7 +268,7 @@
 如您所见我们的 `PostForm` 现在接受两个参数分别定义我们的表单的名字和一些列的设置。两个参数都会被传给父对象。如果你仔细观察我们是如何添加 `PostFieldset` 的，便会发现我们为字段集赋予了一个名字。这些选项都会在 `PostFieldset` 创建时通过 `FormElementManager` 传出。不过要让这些正常工作，我们需要在字段集里面做同样的工作：
 
  <?php
- // Filename: /module/Blog/src/Blog/Form/PostFieldset.php
+ // 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
  namespace Blog\Form;
 
  use Zend\Form\Fieldset;
@@ -308,7 +308,7 @@
 现在我们在 `WriteController` 里有了我们的 `PostForm `，是时候将这个表单传递给视图，并让其通过指定的来自 `Zend\Form` 组件的 `ViewHelpers` 来进行渲染。首先修改你的控制器，让表单被传递到视图。
 
 	  <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -378,7 +378,7 @@
 然而要实现上述所有功能并不需要你想象中那么多的代码。首先，按照下例修改你的 `WriteController` 代码：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -413,7 +413,7 @@
 	
 	                     return $this->redirect()->toRoute('blog');
 	                 } catch (\Exception $e) {
-	                     // Some DB Error happened, log it and let the user know
+	                     // 某些数据库错误发生了，记录并且让用户知道
 	                 }
 	             }
 	         }
@@ -434,7 +434,7 @@
 我们通过拓展 `PostService` 来修复这个错误，同时不要忘记更改 `PostServiceInterface` 的签名！
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostServiceInterface.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostServiceInterface.php
 	 namespace Blog\Service;
 	
 	 use Blog\Model\PostInterface;
@@ -470,7 +470,7 @@
 如您所见 `savePost()` 函数已经被添加，并且需要在 `PostService` 里被实现。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 use Blog\Mapper\PostMapperInterface;
@@ -519,7 +519,7 @@
 现在我们对 `postMapper` 做出了假设，所以需要扩展我们的 `PostMapperInterface` 接口以及其实现。首先我们拓展接口：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/PostMapperInterface.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/PostMapperInterface.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -551,7 +551,7 @@
 然后我们实现 save 函数：
 
 	<?php
-	// Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	// 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	namespace Blog\Mapper;
 	
 	use Blog\Model\PostInterface;
@@ -646,15 +646,15 @@
 	   public function save(PostInterface $postObject)
 	   {
 	      $postData = $this->hydrator->extract($postObject);
-	      unset($postData['id']); // Neither Insert nor Update needs the ID in the array
+	      unset($postData['id']); // Insert 和 Update 都不需要数组中存在 ID
 	
 	      if ($postObject->getId()) {
-	         // ID present, it's an Update
+	         // ID 存在，是一个 Update
 	         $action = new Update('posts');
 	         $action->set($postData);
 	         $action->where(array('id = ?' => $postObject->getId()));
 	      } else {
-	         // ID NOT present, it's an Insert
+	         // ID 不存在，是一个Insert
 	         $action = new Insert('posts');
 	         $action->values($postData);
 	      }
@@ -665,7 +665,7 @@
 	
 	      if ($result instanceof ResultInterface) {
 	         if ($newId = $result->getGeneratedValue()) {
-	            // When a value has been generated, set it on the object
+	            // 每当一个值被生成时，将其赋给对象
 	            $postObject->setId($newId);
 	         }
 	
@@ -700,7 +700,7 @@
 在我们继续前进并且将充水器放进表单之前，先让我们对表单的数据做一个 dump。这样做可以让我们很方便的注意到充水器做的所有变更。根据下例修改你的 `WriteController`：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -736,7 +736,7 @@
 	
 	                     return $this->redirect()->toRoute('blog');
 	                 } catch (\Exception $e) {
-	                     // Some DB Error happened, log it and let the user know
+	                     // 某些数据库错误发生了，记录并且让用户知道
 	                 }
 	             }
 	         }
@@ -761,7 +761,7 @@
 现在让你的字段集将数据注水成 `Post` 对象是非常简单的。你需要做的事情仅仅是指定注水器和对象原型，如下例所示：
 
  <?php
- // Filename: /module/Blog/src/Blog/Form/PostFieldset.php
+ // 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
  namespace Blog\Form;
 
  use Blog\Model\Post;
@@ -807,7 +807,7 @@
 `base_fieldset` 基本上就告诉了表单“这个表单是关于我的，请不要操心其他数据，只操心我就好”。而且当表单意识到这个字段集是来真的，它就会乖乖使用字段集提供的冲水器，并且将我们想要的对象返回出来。修改你的 `PostForm` 并且将 `PostFieldset` 设置成 `base_fieldset`：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Form/PostForm.php
+	 // 文件名： /module/Blog/src/Blog/Form/PostForm.php
 	 namespace Blog\Form;
 	
 	 use Zend\Form\Form;
@@ -847,7 +847,7 @@
 现在你可以回滚你的 `WriteController` 到它的先前状态了，来让表单数据传给 `PostService`。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -882,7 +882,7 @@
 	
 	                     return $this->redirect()->toRoute('blog');
 	                 } catch (\Exception $e) {
-	                     // Some DB Error happened, log it and let the user know
+	                     // 某些数据库错误发生了，记录并且让用户知道
 	                 }
 	             }
 	         }

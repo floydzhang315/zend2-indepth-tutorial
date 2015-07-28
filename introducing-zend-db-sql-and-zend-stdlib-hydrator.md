@@ -26,7 +26,7 @@
 要使用 `Zend\Db\Sql` 来查询一个数据库，你需要拥有一个可用的数据库连接。这个链接使用过任何实现 `Zend\Db\Adapter\AdapterInterface` 接口的类创建的。最方便的创建这种类的方法是通过使用（监听配置键 `db` 的） `Zend\Db\Adapter\AdapterServiceFactory`。让我们从创建所需配置条目开始，修改你的 `module.config.php ` 文件，添加一个顶级键 `db`：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db' => array(
 	         'driver'         => 'Pdo',
@@ -48,7 +48,7 @@
 >**注意**：一个需要注意的重要事情是，通常你**不会**希望你的凭证存放在一个普通的配置文件中，而是希望存放在本地配置文件中，例如 `/config/autoload/db.local.php`。在使用 zend 骨架 .gitignore 文件标记时，存放在本地的文件**不会**被推送到服务器。当您共享您的代码时请务必注意这点。参考下例代码：
 
 	<?php
-	// Filename: /config/autoload/db.local.php
+	// 文件名： /config/autoload/db.local.php
 	return array(
 	        'db' => array(
 	            'driver'         => 'Pdo',
@@ -65,7 +65,7 @@
 接下来我们要做的事情就是利用 `AdapterServiceFactory`。这是一个 `ServiceManager` 条目，看上去像下面这样：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db' => array(
 	         'driver'         => 'Pdo',
@@ -104,7 +104,7 @@
 现在回想我们之前学到的东西。为了让 `Zend\Db\Sql` 能工作我们需要一个可用的 `AdapterInterface` 接口的实现。这是一个要求，所以会通过构造器注入进行注入。创建一个 `__construct()` 函数来接收 `AdapterInterface` 作为参数，并且将其存放在类中：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -148,7 +148,7 @@
 现在我们可以将映射器实现注册成一个 Service 了。如果你能回想起以往的章节，或者你有去查看一下当前的错误信息，你就会注意到我们通过调用 `Blog\Mapper\PostMapperInterface` Service 来获取映射器的实现。修改配置文件，以便让这个键能调用我们刚调用的 factory 类。
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** Db Config */ ),
 	     'service_manager' => array(
@@ -171,7 +171,7 @@
 这是因为实际上我们的映射器还不会返回任何东西。让我们来修改一下 `findAll()` 函数来从数据库表中返回所有博客帖子。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Zend\Db\Adapter\AdapterInterface;
@@ -221,7 +221,7 @@
 让我们暂时先不要返回 `$result` 变量，然后生成一个 dump 来看看到底这里发生了什么。更改 `findAll()` 函数来做一个 `$result` 变量的数据 dump：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -286,7 +286,7 @@
 如您所见，没有任何数据被返回，取而代之的是我们得到了一些 `Result` 对象的 dump，并且里面并不包含任何有用的数据。不过这是一个错误的推论，这个 `Result` 对象只有在当你实际试图访问的时候才会拥有信息。所以若要利用 `Result` 对象内的数据，最佳方案是将 `Result` 对象传给 `ResultSet` 对象，只要查询成功就可以这样做。
 	
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -374,7 +374,7 @@
 另外一个非常有趣的属性是 `["returnType":protected] => string(11) "arrayobject"`。这告诉了我们所有的数据库条目都会以 `ArrayObject` 的形式返回。这产生了一个小问题，因为 `PostMapperInterface` 要求我们返回一个 `PostInterface` 对象数组，幸运的是这里有非常简单的办法让我们来解决它。在上面的例子中我们使用了默认的 `ResultSet` 对象。其实这里还有 `HydratingResultSet` 对象来将给出的数据充水成给出的对象。意思就是，如果我们告诉 `HydratingResultSet` 对象来使用数据库数据为我们生成 `post` 对象，那么它就能做到。让我们修改一下我们的代码：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -439,7 +439,7 @@
 在我们完成的事情中，还有一件事情并没有做到最佳实践。我们同时使用充水器和一个对象在下述文件内：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -515,7 +515,7 @@
 现在我们的映射器需要更多的参数来更新 `ZendDbSqlMapperFactory` 并且注入那些参数了。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Factory/ZendDbSqlMapperFactory.php
+	 // 文件名： /module/Blog/src/Blog/Factory/ZendDbSqlMapperFactory.php
 	 namespace Blog\Factory;
 	
 	 use Blog\Mapper\ZendDbSqlMapper;
@@ -549,7 +549,7 @@
 在我们跨越到下一个章节之前，先快速地通过为 `find()` 函数编写一个实现来完成映射器。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;

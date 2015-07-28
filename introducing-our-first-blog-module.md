@@ -10,7 +10,7 @@
 创建文件 `/module/Blog/Module.php`
 
      <?php
-     // Filename: /module/Blog/Module.php
+     // 文件名： /module/Blog/Module.php
      namespace Blog;
     
      class Module
@@ -20,7 +20,7 @@
 现在我们拥有一个可以被 ZF2 的 _ModuleManager_ 侦测到的模组了。让我们将这个模组添加到我们应用程序中。虽然这个模组目前还不能干任何事情，但仅仅拥有 `Module.php` 类已经能让其被 ZF2 的 _ModuleManager_ 载入。要实现这点，在主应用程序配置文件 `/config/application.config.php` 中内的模组数组中为 `Blog` 添加一个条目：
 
 	 <?php
-	 // Filename: /config/application.config.php
+	 // 文件名： /config/application.config.php
 	 return array(
 	     'modules' => array(
 	         'Application',
@@ -42,7 +42,7 @@
 添加一个 `getConfig()` 函数到 `Module` 类中，并让其返回配置。（这个函数是在 `ConfigProviderInterface` 中声明的，尽管实际上是否要实现这个接口是可选的） 这个函数应该能返回一个 `array` 或者一个 `Traversable` 对象。继续编辑您的`/module/Blog/Module.php`:
 
 	<?php
-	 // Filename: /module/Blog/Module.php
+	 // 文件名： /module/Blog/Module.php
 	 namespace Blog;
 	
 	 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -58,13 +58,13 @@
 做到这里我们的 `Module` 就可以被配置了。配置文件可能会变得十分大，此时将所有东西放在 `getConfig()` 中就不是最佳手段了。为了保持我们的工程的组织清晰，我们会将数组配置放在单独的文件中。在此我们创建 `/module/Blog/config/module.config.php`：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array();
 
 现在我们来重写 `getConfig()` 函数来添加这个刚刚建立的新文件。
 
 	<?php
-	 // Filename: /module/Blog/Module.php
+	 // 文件名： /module/Blog/Module.php
 	 namespace Blog;
 	
 	 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -80,7 +80,7 @@
 重新装载您的应用程序，这是你便会见到所有东西仍然和之前一样，接下来我们为配置文件添加一个新路径：
 
 	<?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     // 该行为 RouteManager 打开配置
 	     'router' => array(
@@ -118,7 +118,7 @@
 现在我们需要告诉我们的模组要去哪里寻找这个叫做 `Blog\Controller\List` 的控制器。要做到这点我们必须将这个 key 添加到 `controllers` 配置 key，在 `/module/Blog/config/module.config.php` 内。
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'controllers' => array(
 	         'invokables' => array(
@@ -135,7 +135,7 @@
 这个错误告诉我们应用程序知道要载入哪个类，但是并不知道在哪里能找到它。要修正这个问题，我们需要为我们的 `Module` 配置 [autoloading](http://www.php.net/manual/en/language.oop5.autoload.php)。 Autoloading 是一个过程，让 PHP 能自动根据需求载入类。至于我们的 Module，我们通过添加 `getAutoloaderConfig()` 函数到我们的 Module 类来实现这点。（这个函数是在 [AutoloaderProviderInterface](https://github.com/zendframework/zf2/:current_branch/library/Zend/ModuleManager/Feature/AutoloaderProviderInterface.php) 中定义的，尽管实际上类是否要实现这个接口是可选的）
 
 	 <?php
-	 // Filename: /module/Blog/Module.php
+	 // 文件名： /module/Blog/Module.php
 	 namespace Blog;
 	
 	 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
@@ -188,7 +188,7 @@ __目录__.'/src/'.__名称空间__ 中找到 (
 如果你现在刷新浏览器，你还是会见到同样的错误，即使我们已经配置了 autoloader，因为我们还需要创建控制器类。我们立刻创建这个文件：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 class ListController
@@ -215,7 +215,7 @@ __目录__.'/src/'.__名称空间__ 中找到 (
 这是因为我们的控制器必须实现 [ZendStdlibDispatchableInterface](https://github.com/zendframework/zf2/:current_branch/library/Zend/Stdlib/DispatchableInterface.php) 接口才能被 ZendFramework 的 MVC 层运行。ZendFramework 提供了一些该接口的基础控制器实现，叫做 [AbstractActionController](https://github.com/zendframework/zf2/:current_branch/library/Zend/Mvc/Controller/AbstractActionController.php)，我们稍后会用。让我们先修改我们的控制器：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Zend\Mvc\Controller\AbstractActionController;
@@ -245,7 +245,7 @@ __目录__.'/src/'.__名称空间__ 中找到 (
 在我们继续之前，先让我们快速的看一下我们将该文件放置在何处。请注意视图文件是放置在 `/view` 子目录下的，并不是在 `/src` 子目录下，因为他们不是 PHP 类文件，而是用于渲染 HTML 的模板文件。下面的路径需要一些解释，不过也非常简单。首先我们有全小写的名称空间，跟着一个小写的控制器名称（没有后缀‘controller’），最后跟上我们正在访问的动作的名称（同样地，没有后缀‘action’）。总的来看像这样：`/view/{namespace}/{controller}/{action}.phtml`。这已经成为了社区标准不过也有潜在的随时被你改变的可能。不过光是创建这个文件是不够的，这就带出了这次快速开始指南的最后主题：我们需要让应用程序知道上哪去寻找视图文件。通过修改我们的模组配置文件 `module.config.php` 来实现：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'view_manager' => array(
 	         'template_path_stack' => array(

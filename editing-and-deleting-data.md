@@ -1,13 +1,13 @@
 # 编辑数据和删除数据
-在上一个章节中我们已经学习了如何使用 `Zend\Form` 组件和 `Zend\Db` 组件来编写建立新数据集的功能。这一章节会专注于介绍编辑与删除数据，从而完全实现增删改查功能。我们先从编辑数据开始。
+在上一个章节中我们已经学习了如何使用 `Zend\Form` 组件和 `Zend\Db` 组件来编写建立新数据集的功能。这一章节会专注于介绍编辑数据与删除数据，从而完全实现增删改查等功能。我们首先从编辑数据开始。
 
 ## 为表单绑定数据
-插入数据表单和编辑数据表单之间的一个根本性的区别是，事实上在编辑数据表单中，数据已经存在。这意味着我们需要先找到一个方法从数据库获得数据，再将其预先填入表单中。幸运的，`Zend\Form` 组件提供了一个非常方便的方法来实现这些功能，称之为**数据绑定**。
+插入数据表单和编辑数据表单之间的一个根本性的区别是，事实上在编辑数据表单中，数据已经存在。这意味着我们需要先找到一个方法从数据库获得数据，再将其预先填入表单中。幸运地，`Zend\Form` 组件提供了一个非常方便的方法来实现这些功能，并将其称之为**数据绑定**。
 
-当你提供一个编辑数据表单的时候，你需要做的事情只有将你感兴趣的对象从你的服务中进行 `bind` 和表单绑定。下例延时了如何在你的控制器内实现这一点：
+当你提供一个编辑数据表单的时候，需要做的事情只有将你感兴趣的对象从你的服务中进行 `bind` 和表单绑定。下例演示了如何在你的控制器内实现这一点：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/WriteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/WriteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -43,7 +43,7 @@
 	                     return $this->redirect()->toRoute('blog');
 	                 } catch (\Exception $e) {
 	                     die($e->getMessage());
-	                     // Some DB Error happened, log it and let the user know
+	                     // 发生了一些数据库错误，进行记录并且让用户知道
 	                 }
 	             }
 	         }
@@ -83,15 +83,15 @@
 
 比起 `addAction()`，`editAction()` 只有三行代码是不一样的。第一个不一样的地方是曾经用来根据路径的 `id` 参数从服务获得相关的 `Post` 对象（我们即将会对这个部分进行编写）。
 
-第二行不一样的代码可以让你绑定数据到 `Zend\Form` 组件上。我们在这里可以使用一个对象是因为我们的 `PostFieldset` 使用了注水器来将对象中的数据进行处理并显示。
+第二个不一样的地方是，新代码可以让你绑定数据到 `Zend\Form` 组件上。我们在这里之可以有效使用对象是因为我们的 `PostFieldset` 使用了注水器来将对象中的数据进行处理并显示。
 
-最后，比起真的执行 `$form->getData()`，我们只需要简单地使用之前的 `$post` 变量，因为这个变量会被自动更新到表单中最新的数据，这是数据绑定功能的功劳。这就是所有要做的事了，现在唯一要加的东西就是新的编辑数据路径和针对该操作的视图。
+最后，比起真的去执行 `$form->getData()`，我们只需要简单地使用之前的 `$post` 变量就可以达到目的，因为这个变量会被自动更新成表单中最新的数据，这是数据绑定功能的功劳。这些就是所有要做的事情了，现在唯一要加的东西就是添加新的编辑数据路径和编写针对该操作的视图文件。
 
 ## 添加编辑数据路径
 编辑数据路径不外乎是一个普通的段路径，和 `blog/detail` 没什么区别。配置你的路径配置文件来添加一个新路径：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** Db Config */ ),
 	     'service_manager' => array( /** ServiceManager Config */ ),
@@ -152,13 +152,13 @@
 	 );
 
 ## 创建编辑数据模板
-下一个需要做的事情就是新的模板 `blog/write/edit`：
+下一个需要做的事情就是创建新的模板 `blog/write/edit`：
 
-你需要做的，对视图端要做的所有改变，只要将目前的 `id` 传给 `url()` viewHelper。要实现这点你有两种选择：第一种是将 ID 通过参数数组传值，如下例所示：
+你需要对视图端做的所有改变，仅仅是将目前的 `id` 传给 `url()` viewHelper。要实现这点你有两种选择：第一种是将 ID 通过参数数组传值，如下例所示：
 
     $this->url('blog/edit', array('id' => $id));
 
-这样做的缺点是 `$id` 不可用，因为我们没有将其指定给视图。然而 `Zend\Mvc\Router` 组件给了我们一个很不错的功能来重用目前已经匹配的参数。这可以通过设定 viewHelper 的最后一个参数为 `true` 实现：
+这样做的缺点是 `$id` 变量不可用，因为我们没有将其指定给视图。然而 `Zend\Mvc\Router` 组件给了我们一个很不错的功能来重用目前已经匹配的参数。这可以通过设定 viewHelper 的最后一个参数为 `true` 实现：
 
     $this->url('blog/edit', array(), true);
  
@@ -185,7 +185,7 @@
 最后终于是时候来删除一些数据了。我们从创建一个新路径和添加一个新控制器开始。
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** Db Config */ ),
 	     'service_manager' => array( /** ServiceManager Config */ ),
@@ -269,7 +269,7 @@
 **Factory**
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Factory/DeleteControllerFactory.php
+	 // 文件名： /module/Blog/src/Blog/Factory/DeleteControllerFactory.php
 	 namespace Blog\Factory;
 	
 	 use Blog\Controller\DeleteController;
@@ -297,7 +297,7 @@
 **Controller**
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/DeleteController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/DeleteController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -349,7 +349,7 @@
 **Interface**
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostServiceInterface.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostServiceInterface.php
 	 namespace Blog\Service;
 	
 	 use Blog\Model\PostInterface;
@@ -357,24 +357,24 @@
 	 interface PostServiceInterface
 	 {
 	     /**
-	      * Should return a set of all blog posts that we can iterate over. Single entries of the array are supposed to be
-	      * implementing \Blog\Model\PostInterface
+	      * 应该会分会所有博客帖子集，以便我们对其遍历。数组中的每个条目应该都是
+	      * \Blog\Model\PostInterface 接口的实现
 	      *
 	      * @return array|PostInterface[]
 	      */
 	     public function findAllPosts();
 	
 	     /**
-	      * Should return a single blog post
+	      * 应该会返回单个博客帖子
 	      *
-	      * @param  int $id Identifier of the Post that should be returned
+	      * @param  int $id 应该被返回的帖子的标识符
 	      * @return PostInterface
 	      */
 	     public function findPost($id);
 	
 	     /**
-	      * Should save a given implementation of the PostInterface and return it. If it is an existing Post the Post
-	      * should be updated, if it's a new Post it should be created.
+	      * 应该会保存给出了的 PostInterface 实现并且返回。如果是已有的帖子那么帖子
+	      * 应该被更新，如果是新帖子则应该去创建。
 	      *
 	      * @param  PostInterface $blog
 	      * @return PostInterface
@@ -382,8 +382,8 @@
 	     public function savePost(PostInterface $blog);
 	
 	     /**
-	      * Should delete a given implementation of the PostInterface and return true if the deletion has been
-	      * successful or false if not.
+	      * 应该删除给出的 PostInterface 的一个实现，如果删除成功就返回 true
+	      * 否则返回 false.
 	      *
 	      * @param  PostInterface $blog
 	      * @return bool
@@ -394,7 +394,7 @@
 **Service**
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 use Blog\Mapper\PostMapperInterface;
@@ -451,7 +451,7 @@
 现在我们认为 `PostMapperInterface` 应该有 `delete()` 函数。我们还没对其进行实现所以先将其加入 `PostMapperInterface`。
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/PostMapperInterface.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/PostMapperInterface.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -491,7 +491,7 @@
 现在我们已经在接口内声明了函数，是时候在 `ZendDbSqlMapper` 内对其进行实现了：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -575,15 +575,15 @@
 	     public function save(PostInterface $postObject)
 	     {
 	         $postData = $this->hydrator->extract($postObject);
-	         unset($postData['id']); // Neither Insert nor Update needs the ID in the array
+	         unset($postData['id']); // Insert 和 Update 都不需要数组中存在 ID
 	
 	         if ($postObject->getId()) {
-	             // ID present, it's an Update
+	             // ID 存在，是一个 Update
 	             $action = new Update('post');
 	             $action->set($postData);
 	             $action->where(array('id = ?' => $postObject->getId()));
 	         } else {
-	             // ID NOT present, it's an Insert
+	             // ID 不存在，是一个Insert
 	             $action = new Insert('post');
 	             $action->values($postData);
 	         }
@@ -594,7 +594,7 @@
 	
 	         if ($result instanceof ResultInterface) {
 	             if ($newId = $result->getGeneratedValue()) {
-	                 // When a value has been generated, set it on the object
+	                 // 每当一个值被生成时，将其赋给对象
 	                 $postObject->setId($newId);
 	             }
 	
@@ -637,4 +637,4 @@
 # 总结
 在这个章节中我们学习了在 `Zend\Form` 组件中的数据绑定是如何工作的，并且通过它完成了我们的更新数据程序。然后我们还学了如何使用 HTML 表单和在不依赖 `Zend\Form` 组件的前提下检查表单数据，最终我们完成了一个完整的博客帖子增删改查示例。
 
-在下个章节中我们会重新概括一次我们完成的所有事情。我们会谈谈我们使用的设计模式和回答在这整个教程实践中经常出现的一些问题。
+在下个章节中我们会重新概括一次我们完成的所有事情。然后会谈谈我们使用的设计模式和回答在这整个教程实践中经常出现的一些问题。

@@ -13,7 +13,7 @@
 首先我们先在 `/module/Blog/src/Blog/Service/PostServiceInterface.php` 内定义接口。
 
 	<?php
-	 // Filename: /module/Blog/src/Blog/Service/PostServiceInterface.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostServiceInterface.php
 	 namespace Blog\Service;
 	
 	 use Blog\Model\PostInterface;
@@ -21,17 +21,17 @@
 	 interface PostServiceInterface
 	 {
 	     /**
-	      * Should return a set of all blog posts that we can iterate over. Single entries of the array are supposed to be
-	      * implementing \Blog\Model\PostInterface
+	      * 应该会分会所有博客帖子集，以便我们对其遍历。数组中的每个条目应该都是
+	      * \Blog\Model\PostInterface 接口的实现
 	      *
 	      * @return array|PostInterface[]
 	      */
 	     public function findAllPosts();
 	
 	     /**
-	      * Should return a single blog post
+	      * 应该会返回单个博客帖子
 	      *
-	      * @param  int $id Identifier of the Post that should be returned
+	      * @param  int $id 应该被返回的帖子的标识符
 	      * @return PostInterface
 	      */
 	     public function findPost($id);
@@ -42,7 +42,7 @@
 在 `/module/Blog/src/Blog/Service/PostService.php` 内创建类 `PostService`，请确保实现 `PostServiceInterface` 和它所依赖的函数（我们会稍后补全这些函数）。然后您应该有一个类看上去如同下文：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 class PostService implements PostServiceInterface
@@ -52,7 +52,7 @@
 	      */
 	     public function findAllPosts()
 	     {
-	         // TODO: Implement findAllPosts() method.
+	         // 文件名： TODO: Implement findAllPosts() method.
 	     }
 	
 	     /**
@@ -60,7 +60,7 @@
 	      */
 	     public function findPost($id)
 	     {
-	         // TODO: Implement findPost() method.
+	         // 文件名： TODO: Implement findPost() method.
 	     }
 	 }
 
@@ -68,27 +68,27 @@
 因为我们的 `PostService` 会返回 Model，所以也要创建它们。请确保先为 Model 编写 `Interface`！我们来创建 `/module/Blog/src/Blog/Model/PostInterface.php` 和 `/module/Blog/src/Blog/Model/Post.php`。首先是 `/module/Blog/src/Blog/Model/Post.php`：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Model/PostInterface.php
+	 // 文件名： /module/Blog/src/Blog/Model/PostInterface.php
 	 namespace Blog\Model;
 	
 	 interface PostInterface
 	 {
 	     /**
-	      * Will return the ID of the blog post
+	      * 会返回博客帖子的 ID
 	      *
 	      * @return int
 	      */
 	     public function getId();
 	
 	     /**
-	      * Will return the TITLE of the blog post
+	      * 会返回博客帖子的标题
 	      *
 	      * @return string
 	      */
 	     public function getTitle();
 	
 	     /**
-	      * Will return the TEXT of the blog post
+	      * 会返回博客帖子的文本
 	      *
 	      * @return string
 	      */
@@ -100,7 +100,7 @@
 然后现在我们对照接口创建合适的 Model 文件。请确保设置所需的类属性并且补全我们的 `PostInterface` 接口定义的 getter 函数。尽管我们的接口不关心 setter 函数，我们还是编写相应的函数来让我们的测试数据得以写入。然后您应该有一个类类似下文：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Model/Post.php
+	 // 文件名： /module/Blog/src/Blog/Model/Post.php
 	 namespace Blog\Model;
 	
 	 class Post implements PostInterface
@@ -173,7 +173,7 @@
 现在我们拥有我们所需的 Model 文件，可以为 `PostService` 类赋予生机了。为了让 Service-层 清晰易懂，我们目前只会让 `PostService` 直接返回一些事先写死的（硬编码的）内容。在 `PostService` 内创建一个名为 `$data` 的属性，并将其定义为我们的 Model 类型数组。如下例编辑 `PostService`：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 class PostService implements PostServiceInterface
@@ -211,7 +211,7 @@
 	      */
 	     public function findAllPosts()
 	     {
-	         // TODO: Implement findAllPosts() method.
+	         // 文件名： TODO: Implement findAllPosts() method.
 	     }
 	
 	     /**
@@ -219,14 +219,14 @@
 	      */
 	     public function findPost($id)
 	     {
-	         // TODO: Implement findPost() method.
+	         // 文件名： TODO: Implement findPost() method.
 	     }
 	 }
 
 我们现在有一些数据了，来修改 `find*()` 函数来使其返回合适的 Model 文件：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 use Blog\Model\Post;
@@ -301,7 +301,7 @@
 在这个例子中，我们想让博客模组 `ListController` 和我们的 `PostService` 互动。这意味着 `PostService` 类是类 `ListController` 的一个依赖对象（`ListController` 依赖 `PostService`），没有了 `PostService`，`ListController`也无法正常运作。为了确保 `ListController` 总能得到相应的依赖对象，我们会在 `ListController` 的构造器 `__construct()` 中事先定义好依赖对象。请将 `ListController` 修改成下例所示：
 
 	<?php
-	 // Filename: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -331,7 +331,7 @@
 那么我们如何确保 `ListController` 会接收到这样的一个实现？解决问题之道在于告诉应用程序如何创建 `Blog\Controller\ListController` 的实例。如果你还记得我们如何创造控制器的话，类似的，在模组配置文件中的 `invokable` 数组中添加一个条目：
 
 	<?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'view_manager' => array( /** ViewManager Config */ ),
 	     'controllers'  => array(
@@ -345,7 +345,7 @@
 一个 `invokable` 类是一个可以在没有任何参数下构造的类。由于我们的 `Blog\Controller\ListController` 现在需要有构造参数了，所以需要对此进行一点连带修改。`ControllerManager` 负责实例化控制器，也支持使用 `factories`。`factory` 类用于创建其他类的实例。现在我们为我们的 `ListController` 创建一个 `factory` 类，先将我们的配置文件按照下例修改：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'view_manager' => array( /** ViewManager Config */ ),
 	     'controllers'  => array(
@@ -376,7 +376,7 @@
 在 Zend Framework 2 中的 Factory 类总是需要实现 `Zend\ServiceManager\FactoryInterface` 接口。实现这个类可以让 ServiceManager 知道函数 `createService()` 应该被调用。并且 `createService()` 其实期望接收一个 *ServiceLocatorInterface* 的实现作为参数，这样 *ServiceManager* 就可以通过先前提到的依赖对象注入来对该参数进行注入了。首先我们来实现 factory 类：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Factory/ListControllerFactory.php
+	 // 文件名： /module/Blog/src/Blog/Factory/ListControllerFactory.php
 	 namespace Blog\Factory;
 	
 	 use Blog\Controller\ListController;
@@ -425,7 +425,7 @@
 注册一个 Service 和注册 Controller 一样简单。我们只需要修改 `module.config.php` 文件，添加一个叫做 `service_manager` 新键，其也拥有 `invokable` 和 `factories`。和我们将两者包含在 `controllers` 数组内一样，具体请参照下例配置文件：
 
 	 <?php
-	 // Filename: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'service_manager' => array(
 	         'invokables' => array(
@@ -443,7 +443,7 @@
 现在让我们在 `ListController` 中使用 `PostService`。要实现这点我们需要复写默认 `indexAction()` 函数并且将 `PostService` 的值返回到视图。参照下例修改 `ListController`：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -480,7 +480,7 @@
 
 我们来修改视图文件，让其显示一个所有博客帖子（由 `PostService` 返回）的列表：
 
-	 <!-- Filename: /module/Blog/view/blog/list/index.phtml -->
+	 <!-- 文件名： /module/Blog/view/blog/list/index.phtml -->
 	 <h1>Blog</h1>
 	
 	 <?php foreach ($this->posts as $post): ?>

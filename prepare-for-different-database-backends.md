@@ -24,7 +24,7 @@
 首先我们在 `Blog\Mapper` 名称空间下创建一个新文件，叫做 `PostMapperInterface.php`，然后参考下例添加内容：
 
 	<?php
-	 // Filename: /module/Blog/src/Blog/Mapper/PostMapperInterface.php
+	 // 文件名： /module/Blog/src/Blog/Mapper/PostMapperInterface.php
 	 namespace Blog\Mapper;
 	
 	 use Blog\Model\PostInterface;
@@ -50,7 +50,7 @@
 现在我们定义了我们的映射层应该如何工作，我们可以在 `PostService` 内对其进行调用。要开始重构，我们要先清空我们的类并且删除所有现有的内容，然后实现 `PostServiceInterface` 接口，现在你的 `PostService` 应该看上去像这样：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 use Blog\Mapper\PostMapperInterface;
@@ -97,7 +97,7 @@
 不过我们的正在做的东西的权力取决于我们**可以**做出的假设。这个 `PostService` 总会接收到一个映射器作为参数。所以在我们的 `find*()` 函数中我们**可以**假设其存在。回想 `PostMapperInterface` 定义了一个 `find($id)` 函数和一个 `findAll()` 函数。让我们在 Service 函数里面上面提到的函数：
 	
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Service/PostService.php
+	 // 文件名： /module/Blog/src/Blog/Service/PostService.php
 	 namespace Blog\Service;
 	
 	 use Blog\Mapper\PostMapperInterface;
@@ -140,7 +140,7 @@
 现在我们介绍了 `PostMapperInterface` 是 `PostService` 的一个依赖对象，我们再也没办法将这个 Service 定义为 `invokable` 了，因为它有了依赖对象。所以我们需要为这个 Service 创建一个 Factory，就和我们为 `ListController` 做的一样。首先更改配置文件，将其从 `invokable` 数组中移动至 `factories` 数组，然后赋予合适的 factory 类，如下例：
 
  <?php
- // Filename: /module/Blog/config/module.config.php
+ // 文件名： /module/Blog/config/module.config.php
  return array(
      'service_manager' => array(
          'factories' => array(
@@ -155,7 +155,7 @@
 完成上述配置文件之后我们需要创建 `Blog\Factory\PostServiceFactory` 类，所以现在我们来实现它：
 
 	 <?php
-	 // Filename: /module/Blog/src/Blog/Factory/PostServiceFactory.php
+	 // 文件名： /module/Blog/src/Blog/Factory/PostServiceFactory.php
 	 namespace Blog\Factory;
 	
 	 use Blog\Service\PostService;

@@ -140,7 +140,7 @@
 	                     'action'     => 'showAll',
 	                 ),
 	             ),
-	             // Defines that "/news" can be matched on its own without a child route being matched
+	             // 定义 "/news" 自身就可以被匹配，不一定需要子路径
 	             'may_terminate' => true,
 	             'child_routes' => array(
 	                 'archive' => array(
@@ -197,7 +197,7 @@
 现在我们知道如何配置新路径了，让我们先创建一个路径用来显示单个数据库里的 `Blog`。我们希望能够通过内部 ID 来识别博客帖子。由于那个 ID 是一个变量参数，所以我们需要 `Segment` 路径类型的路径。进一步的，我们还想将这个路径设置为 `blog` 的子路径：
   
 	 <?php
-	 // FileName: /module/Blog/config/module.config.php
+	 // 文件名： /module/Blog/config/module.config.php
 	 return array(
 	     'db'              => array( /** DB Config */ ),
 	     'service_manager' => array( /* ServiceManager Config */ ),
@@ -251,7 +251,7 @@
 这是因为实际上控制器尝试访问 `detailAction()` 函数，但是这个函数尚未存在。所以我们现在立刻去创建它。前往你的 `ListController` 然后添加 action。返回一个空白的 `ViewModel` 然后刷新页面：
 
 	 <?php
-	 // FileName: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -298,7 +298,7 @@
 观察这个模板，我们可以期望变量 `$this->post` 是一个 `Post` 模型的实例。现在对 `ListController` 进行修改，好让 `Post` 被传递出去。
 
 	 <?php
-	 // FileName: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
@@ -351,7 +351,7 @@
 这看上去还是比较丑陋的，所以我们的 `ListController` 应该准备一些手段来应付 `PostService` 抛出的 `InvalidArgumentException` 异常。每当一个无效的 `Post` 被请求时，我们希望用户能被重定向到 Post 总览页面。让我们通过添加 try-catch 语句来对 `PostService` 进行调用：
 
 	 <?php
-	 // FileName: /module/Blog/src/Blog/Controller/ListController.php
+	 // 文件名： /module/Blog/src/Blog/Controller/ListController.php
 	 namespace Blog\Controller;
 	
 	 use Blog\Service\PostServiceInterface;
