@@ -1,8 +1,10 @@
 # 介绍 Zend\Db\Sql 和 Zend\Stdlib\Hydrator
+
 在上一个章节中我们介绍了映射层并且创建了 `PostMapperInterface`。现在是时候将这个接口进行实现了，以便让我们能再次使用 `PostService`。作为一个指导性示例，我们会使用 `Zend\Db\Sql` 类。
 
 ## 准备数据库
-在我们能开始使用数据库之前，我们应该先准备一个。在这个示例中我们会使用一个 MySQL 数据库，名称为 `blog`，并且可以在 `localhost` 上被访问。这个数据库会拥有一个叫做 `posts` 的表，表拥有三个属性 `id`、`title`、`text`，其中`id`是主键。为了演示需要，请使用这个数据库 dump：
+
+在我们能开始使用数据库之前，我们应该先准备一个数据库。在这个示例中我们会使用一个 MySQL 数据库，名称为 `blog`，并且可以在 `localhost` 上被访问。这个数据库会拥有一个叫做 `posts` 的表，表拥有三个属性 `id`、`title`、`text`，其中 `id` 是主键。为了演示需要，请使用这个数据库 dump：
 
 	 CREATE TABLE posts (
 	   id int(11) NOT NULL auto_increment,
@@ -23,6 +25,7 @@
 	   VALUES  ('Blog #5',  'Welcome to my fifth blog post');
 
 ## Zend\Db\Sql 的一些小知识
+
 要使用 `Zend\Db\Sql` 来查询一个数据库，你需要拥有一个可用的数据库连接。这个链接使用过任何实现 `Zend\Db\Adapter\AdapterInterface` 接口的类创建的。最方便的创建这种类的方法是通过使用（监听配置键 `db` 的） `Zend\Db\Adapter\AdapterServiceFactory`。让我们从创建所需配置条目开始，修改你的 `module.config.php ` 文件，添加一个顶级键 `db`：
 
 	 <?php
@@ -99,6 +102,7 @@
 知道这些之后我们现在可以编写 `PostMapperInterface` 接口的实现了。
 
 ## 编写映射器的实现
+
 我们的映射器实现会存放在和它的接口同样的名称空间内。现在开始创建一个类，称之为 `ZendDbSqlMapper` 然后 implements `PostMapperInterface`。
 
 现在回想我们之前学到的东西。为了让 `Zend\Db\Sql` 能工作我们需要一个可用的 `AdapterInterface` 接口的实现。这是一个要求，所以会通过构造器注入进行注入。创建一个 `__construct()` 函数来接收 `AdapterInterface` 作为参数，并且将其存放在类中：
@@ -429,14 +433,15 @@
 	     }
 	 }
 
-我们又进行了几项更改。首先我们将普通的 `ResultSet` 替换成 `HydratingResultSet`。这个对象要求两个参数，第一个是使用的充水器类型（`hydrator`），第二个是充水的目标对象。充水器，简单来说，就是一个对象用来将任意类型的数据从一种格式转换成另一种。我们现在的输入类型是 `ArrayObject`，但是我们想要 `Post` 模型。而 `ClassMethods` 充水器会搞定这个转换问题，通过调用我们的 `Post` 模型的 getter 和 setter 函数。
+我们又进行了几项更改。首先我们将普通的 `ResultSet` 替换成 `HydratingResultSet`。这个对象要求两个参数，第一个是使用的 `hydrator` 类型，第二个是 `hydrator` 目标对象。`hydrator` 简单来说，就是一个对象用来将任意类型的数据从一种格式转换成另一种。我们现在的输入类型是 `ArrayObject`，但是我们想要 `Post` 模型。而 `ClassMethods` hydrator 搞定这个转换问题，通过调用我们的 `Post` 模型的 getter 和 setter 函数。
 
 比起去 dump `$result` 变量，我们现在直接返回初始化过的 `HydratingResultSet` 对象，从而得以访问里面存储的数据。如果我们得到了一些不是 `ResultInterface` 的实例的返回值，那么就会返回一个空数组。
 
 刷新页面，现在你就能看见你所有的博客帖子了，很好！
 
 ## 重构隐藏依赖对象
-在我们完成的事情中，还有一件事情并没有做到最佳实践。我们同时使用充水器和一个对象在下述文件内：
+
+在我们完成的事情中，还有一件事情并没有做到最佳实践。我们同时使用 `hydrator` 和一个对象在下述文件内：
 
 	 <?php
 	 // 文件名： /module/Blog/src/Blog/Mapper/ZendDbSqlMapper.php
@@ -546,6 +551,7 @@
 当这些就绪之后，你可以再次刷新应用程序，就能看见你的博客帖子再次显示出来了。我们的映射器现在拥有一个很不错的架构，并且没有更多隐含的依赖对象了。
 
 ## 完成映射器
+
 在我们跨越到下一个章节之前，先快速地通过为 `find()` 函数编写一个实现来完成映射器。
 
 	 <?php
@@ -635,11 +641,12 @@
 	 }
 
 
-这个 `find()` 函数看上去真的很像 `findAll()` 函数。这里只有三点简单的差别：首先我们需要为查询添加一个条件，让其只选择一行，这通过使用 `Sql` 对象的 `where()` 函数实现。然后我们也要检查 `$result` 变量内是否有元组在内，这通过 `getAffectedRows()` 函数实现。返回语句会被注入的冲水器充水成同样被注入的原型中。
+这个 `find()` 函数看上去真的很像 `findAll()` 函数。这里只有三点简单的差别：首先我们需要为查询添加一个条件，让其只选择一行，这通过使用 `Sql` 对象的 `where()` 函数实现。然后我们也要检查 `$result` 变量内是否有元组在内，这通过 `getAffectedRows()` 函数实现。返回语句会被注入的 `hydrator` 变成同样被注入的原型中。
 
 这次，但我们找不到任何元组时，会抛出一个 `\InvalidArgumentException` 异常，以便应用程序可以方便的处理这种状况。
 
 ## 总结
+
 完成这个章节之后，你现在了解了如何通过 `Zend\Db\Sql` 类来查询数据，也学习了关于 ZF2 新关键组件之一的 `Zend\Stdlib\Hydrator` 的知识。而且你再一次证明了你可以驾驭恰当的依赖对象注入。
 
 在下一个章节中，我们会更进一步地了解 router，这样能让我们在模组内做更多动作。
