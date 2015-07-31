@@ -1,18 +1,23 @@
-# 对 Form（表单）和 Fieldset（字段集）加以利用
+# 应用 Form 和 Fieldset 
+
 到目前我们已经实现了从数据库读取数据。在现实生活中的应用程序这并不是十分实用，毕竟多数情况下我们至少需要实现完整的增删改查功能。最普遍的添加数据到数据库的方法是让用户将数据添加到 Web `<form>` 表单标签内提交，然后我们的应用程序将用户输入保存到后台。
 
 ## 核心组件
+
 我们想要能够准确的实现目标，而 Zend Framework 提供了所有完成目标所需要的工具。在我们直接开始编码之前，我们有必要了解一下这个工作的两个核心组件。所以我们来看看这些组件是什么，并了解它们是怎么工作的。
 
 ### Zend\Form\Fieldset (字段集)
+
 首先你需要知道的组件就是 `Zend\Form\Fieldset`。一个 `Fieldset` 就是一个包含可重用的元素集合。你将会使用 `Fieldset` 来存储前台输入以便让后台模型处理。每个 `Model` 都准备一个 `Fieldset` 通常被认为是良好实践。
 
 `Fieldset` 组件，然而，并不是 `Form` 表单本身，意味着你不可以只使用 `Fieldset` 却不将其附着在 `Form` 组件上。这样子做的优势是你拥有一个可以重用的元素集合，可以用于任意多个 `Form` 组件上，而不需要为了 `Model` 重新声明所有输入，因为 `Model` 已经被 `Fieldset` 代表。
 
 ### Zend\Form\Form (表单)
-这是你所需要的主要部件，而且你很可能已经听说过了。`Form` 组件是所有的 Web `<form>`元素的主要容器。你可以向其添加单个元素，也可以通过 `Fieldset` 的形式添加多个元素。
+
+这是你所需要的主要部件，而且你很可能已经听说过了。`Form` 组件是所有的 Web `<form>` 元素的主要容器。你可以向其添加单个元素，也可以通过 `Fieldset` 的形式添加多个元素。
 
 ## 创建你的第一个 Fieldset
+
 要解释 `Zend\Form` 组件是如何工作的，不如通过你自己实战编码体会来的深刻。所以我们直接切入正题，创建我们的 `Blog` 模组所需的所有表单。我们首先创建包含所有需要处理的输入元素的 `Fieldset` 用来处理我们的 `Blog` 数据。
 
 - 你需要为 `id` 属性准备一个隐藏的输入域，仅仅在编辑和删除数据时有用。
@@ -57,6 +62,7 @@
 如您所见这个类是十分有用的。我们做的事情是让我们的类 extends `Zend\Form\Fieldset `，然后我们编写一个 `__construct() ` 函数并且添加所有我们需要的元素到字段集。这个 `fieldset` 现在就能随我们意愿用于任意多个表单中了。所以接下来让我们创建第一个 `Form` 表单吧。
 
 ## 创建 PostForm
+
 现在我们已经准备好了我们的 `PostFieldset`，还需要在 `Form` 内使用它。我们接下来需要添加一个表单的提交按钮，这样用户就能够提交数据了。所以在同一个路径 `/module/Blog/src/Blog/Form/PostForm` 下创建 `PostForm`，并且将 `PostFieldset` 添加进去：
 
 	 <?php
@@ -87,6 +93,7 @@
 这就是我们的表单了。并没有什么特别的，我们添加了 `PostFieldset` 到表单里，还添加了一个提交按钮，然后没别的了。现在我们来让这个表单发挥作用。
 
 ## 添加一个新 Post（帖子）
+
 现在我们已经写好了 `PostForm`。现在想要使用它，还有几个任务需要完成。目前你要直接面对的任务是：
 
 - 创建一个新的控制器 `WriteController`
@@ -96,6 +103,7 @@
 - 创建一个新的视图用于显示表单
 
 ### 创建 WriteController（写控制器）
+
 如您在任务清单上所见，我们需要一个新的控制器，而且这个控制器应该拥有两个依赖对象。一个依赖对象时 `PostService`，它也在 `ListController` 中被使用，而另一个依赖对象 `PostForm` 是全新的。由于在显示博客数据的时候，`PostFrom` 是一个 `ListController` 不需要的依赖对象，所以我们会创建一个新的控制器来让读和写两边的事务分离。首先，在配置文件中注册一个控制器工厂（controller-factory）：
 
 	 <?php
@@ -225,6 +233,7 @@
 	 <h1>WriteController::addAction()</h1>
 
 #### 检查当前状态
+
 如果你视图访问新的路径 `localhost:8080/blog/add`，那么你应该会看见下面这样的错误信息：
 
 	 Fatal error: Call to a member function insert() on a non-object in
@@ -236,7 +245,7 @@
 
 >**注意**：当重写 `Zend\Form` 组件的 `__construct()`  函数的时候，请永远不要忘记调用 `parent::__construct()`！
 
-由于缺少了 `parent::__construct()` 调用，表单和字段集都不能正确的初始化。让我们通过在表单和字段级中调用父级构造器来修正这个问题。为了能拥有更好的可伸缩性我们也会包含能够接收多个参数的 `__construct()`  函数的签名。
+由于缺少了 `parent::__construct()` 调用，表单和字段集都不能正确的初始化。让我们通过在表单和字段级中调用父级构造器来修正这个问题。为了能拥有更好的可伸缩性我们也会包含能够接收多个参数的 `__construct()` 函数的签名。
 
 	 <?php
 	 // 文件名： /module/Blog/src/Blog/Form/PostForm.php
@@ -265,46 +274,48 @@
 	     }
 	 }
 
+
 如您所见我们的 `PostForm` 现在接受两个参数分别定义我们的表单的名字和一些列的设置。两个参数都会被传给父对象。如果你仔细观察我们是如何添加 `PostFieldset` 的，便会发现我们为字段集赋予了一个名字。这些选项都会在 `PostFieldset` 创建时通过 `FormElementManager` 传出。不过要让这些正常工作，我们需要在字段集里面做同样的工作：
 
- <?php
- // 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
- namespace Blog\Form;
+```
+<?php
+// 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
+namespace Blog\Form;
 
- use Zend\Form\Fieldset;
+use Zend\Form\Fieldset;
 
- class PostFieldset extends Fieldset
- {
-     public function __construct($name = null, $options = array())
-     {
-         parent::__construct($name, $options);
-
-         $this->add(array(
-             'type' => 'hidden',
-             'name' => 'id'
-         ));
-
-         $this->add(array(
-             'type' => 'text',
-             'name' => 'text',
-             'options' => array(
-                 'label' => 'The Text'
-             )
-         ));
-
-         $this->add(array(
-             'type' => 'text',
-             'name' => 'title',
-             'options' => array(
-                 'label' => 'Blog Title'
-             )
-         ));
-     }
- }
+class PostFieldset extends Fieldset
+{
+public function __construct($name = null, $options = array())
+{
+    parent::__construct($name, $options);
+    $this->add(array(
+        'type' => 'hidden',
+        'name' => 'id'
+    ));
+    $this->add(array(
+        'type' => 'text',
+        'name' => 'text',
+        'options' => array(
+            'label' => 'The Text'
+        )
+    ));
+    $this->add(array(
+        'type' => 'text',
+        'name' => 'title',
+        'options' => array(
+            'label' => 'Blog Title'
+        )
+    ));
+}
+}
+ 
+```
 
 重新载入你的应用程序，你便可以看见你想要的结果了。
 
 ## 显示表单
+
 现在我们在 `WriteController` 里有了我们的 `PostForm `，是时候将这个表单传递给视图，并让其通过指定的来自 `Zend\Form` 组件的 `ViewHelpers` 来进行渲染。首先修改你的控制器，让表单被传递到视图。
 
 	  <?php
@@ -357,13 +368,14 @@
 
 >**注意**： HTML 表单可以通过 `POST` 或者 `GET` 方式来进行传输。 ZF2 默认是使用 `POST`，所以你不需要对此进行显式的设定。但是如果你希望使用 `GET` 方式，只需要在调用 `prepare()` 之前设置好这个特定的属性： `$form->setAttribute('method', 'GET');`
 
-接下类我们会使用几个 `ViewHelpers` 来负责帮我们渲染表单。使用 Zend Framework 渲染表单的方法有很多种，不过使用 `formCollection()` 可能是最快的方法。
+接下来我们会使用几个 `ViewHelpers` 来负责帮我们渲染表单。使用 Zend Framework 渲染表单的方法有很多种，不过使用 `formCollection()` 可能是最快的方法。
 
 刷新您的浏览器，现在就能看见你的表单被正确显示出来了。然而，现在提交表单的话，我们只能看见先前提交的表单原封不动的回显出来。很简单，这是因为我们还没有为控制器添加任何逻辑。
 
 >**注意**：请记住这个教程仅仅聚焦于面向对象编程视角。像这样子渲染表单，不应用任何样式表是无法反映出绝大多数设计师关于一个美丽的表单的想法的。您将会在 [Zend\Form\View\Helper](http://framework.zend.com/manual/current/en/modules/zend.form.view.helpers.html#zend-form-view-helpers) 章节中学习到更多关于表单渲染的内容。
 
 ## 几乎适用于所有类型表单的控制器逻辑
+
 编写一个控制器来处理表单工作流是非常简单的，而且基本上对于应用程序中每一种表单的手段都是一样的。
 
 1. 你会想先检查目前的请求是否一个 POST 请求，这意味着确认表单是否被发出。
@@ -675,6 +687,8 @@
 	      throw new \Exception("Database error");
 	   }
 	}
+	
+	
 在这里 `save()` 函数处理了两种情况：`insert` 和 `update` 流程。首先我们提取 `Post` 对象，因为我们需要数组数据来实现 `Insert` 和 `Update`。然后，我们从数组中删除了 `id` ，因为对一个元组进行更新的时候，我们不需要更新 `id` 属性；同时，我们插入一个新元组的时候也不需要 `id` 字段，所以两种情况均不需要 `id` 这个字段，将其简单去除即可。
 
 在我们去除了 `id` 字段之后，检查那些动作需要被调用。如果 `Post` 对象拥有一个 `id` 集，我们便创建一个新的 `Update` 对象，否则我们创建一个 `Insert` 对象。我们将数据传给合适的 action 然后数据会被传给 `Sql` 对象，最终进行真正的数据库操作。
@@ -688,7 +702,7 @@
 	 called in /module/Blog/src/Blog/Controller/InsertController.php on line 33
 	 and defined in /module/Blog/src/Blog/Service/PostService.php on line 49
 
-表单，默认的时候，会将数据以数组形式传给你。不过我们的 `PostService` 却期待接收到的对象是 `PostInterface` 的一个实现。这意味着我们需要找到一个方法来将这个数组数据转换成对象数据。如果你还记得上一章节，就会知道要通过充水器实现。
+表单，默认的时候，会将数据以数组形式传给你。不过我们的 `PostService` 却期待接收到的对象是 `PostInterface` 的一个实现。这意味着我们需要找到一个方法来将这个数组数据转换成对象数据。如果你还记得上一章节，就会知道要通过 hydrators 实现。
 
 >**注意**：在更新查询中，你会注意到我们添加了一个条件语句让其只更新与给出的 id 匹配的元组：
 >`$action->where(array('id = ?' => $postObject->getId()));`
@@ -697,6 +711,7 @@
 >这些操作符可以用于所有类型的条件语句：`=`、`>`、`<`、`>=` 和 `<=`。
 
 ## 让 Zend\Form 和 Zend\Stdlib\Hydrator 协调工作
+
 在我们继续前进并且将充水器放进表单之前，先让我们对表单的数据做一个 dump。这样做可以让我们很方便的注意到充水器做的所有变更。根据下例修改你的 `WriteController`：
 
 	 <?php
@@ -760,6 +775,7 @@
 
 现在让你的字段集将数据注水成 `Post` 对象是非常简单的。你需要做的事情仅仅是指定注水器和对象原型，如下例所示：
 
+```
  <?php
  // 文件名： /module/Blog/src/Blog/Form/PostFieldset.php
  namespace Blog\Form;
@@ -773,15 +789,12 @@
      public function __construct($name = null, $options = array())
      {
          parent::__construct($name, $options);
-
          $this->setHydrator(new ClassMethods(false));
          $this->setObject(new Post());
-
          $this->add(array(
              'type' => 'hidden',
              'name' => 'id'
          ));
-
          $this->add(array(
              'type' => 'text',
              'name' => 'text',
@@ -789,7 +802,6 @@
                  'label' => 'The Text'
              )
          ));
-
          $this->add(array(
              'type' => 'text',
              'name' => 'title',
@@ -799,12 +811,13 @@
          ));
      }
  }
+```
 
-如您所见我们做了两件事情，我们告知了字段集使用 `ClassMethods` 充水器，然后我们还告知了它应该返回给我们 `Blog` 模型、不过，当你再次提交表单的时候你会注意到什么都没有改变。我们仍然只得到数组数据，而不是对象。
+如您所见我们做了两件事情，我们告知了字段集使用 `ClassMethods` hydrator，然后我们还告知了它应该返回给我们 `Blog` 模型、不过，当你再次提交表单的时候你会注意到什么都没有改变。我们仍然只得到数组数据，而不是对象。
 
-这是因为事实上表单本身不知道自己需要返回一个对象。当表单不知道自己要返回什么的时候就会默认递归使用 `ArraySeriazable` 充水器。要改变这点，我们需要让我们的 `PostFieldset` 变成所谓的 `base_fieldset`。
+这是因为事实上表单本身不知道自己需要返回一个对象。当表单不知道自己要返回什么的时候就会默认递归使用 `ArraySeriazable` hydrator。要改变这点，我们需要让我们的 `PostFieldset` 变成所谓的 `base_fieldset`。
 
-`base_fieldset` 基本上就告诉了表单“这个表单是关于我的，请不要操心其他数据，只操心我就好”。而且当表单意识到这个字段集是来真的，它就会乖乖使用字段集提供的冲水器，并且将我们想要的对象返回出来。修改你的 `PostForm` 并且将 `PostFieldset` 设置成 `base_fieldset`：
+`base_fieldset` 基本上就告诉了表单“这个表单是关于我的，请不要操心其他数据，只操心我就好”。而且当表单意识到这个字段集是来真的，它就会乖乖使用字段集提供的 hydrator，并且将我们想要的对象返回出来。修改你的 `PostForm` 并且将 `PostFieldset` 设置成 `base_fieldset`：
 
 	 <?php
 	 // 文件名： /module/Blog/src/Blog/Form/PostForm.php
@@ -896,6 +909,7 @@
 你现在只需要再次发送表单就能够随心所欲任意添加博客帖子了，不错！
 
 ## 总结
+
 在这个章节中，你学习了许多关于 `Zend\Form` 组件的知识。你也知道了 `Zend\Stdlib\Hydrator` 在 `Zend\Form` 组件扮演多么重要的角色，并且通过使用这两个组件你已经能为博客模组创建插入表单。
 
 再下一个章节中，我们会创建更新和删除程序，从而完成博客模组的所有增删改查功能。
